@@ -10,7 +10,7 @@ jobs:
       MANUSCRIPT_PATH: latexResume/main
       LATEX: pdflatex 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4.1.1
     - name: Install texlive
       run: |
         sudo apt-get install texlive-publishers \
