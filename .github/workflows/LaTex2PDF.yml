@@ -25,7 +25,6 @@ jobs:
         
     - name: Push resume
       run: |
-        git checkout --orphan ${GITHUB_REF##*/}
         cd ${MANUSCRIPT_PATH%/*}
         git add -f ${MANUSCRIPT_PATH##*/}.pdf
         git -c user.name='resume-maker' -c user.email='resume-maker' commit -m "update pdf"
