@@ -73,8 +73,8 @@ jobs:
             cd ${MANUSCRIPT_PATH%/*}
             git config --local user.email "action[bot]@github.com"
             git config --local user.name "github-actions[bot]"
-            git add ${MANUSCRIPT_PATH##*/}_TIMESTAMP.png
-            git commit -m "[bot] updated ${MANUSCRIPT_PATH##*/}_TIMESTAMP.png"
+            git add ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
+            git commit -m "[bot] updated ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png"
     
     - name: Push changes
       uses: ad-m/github-push-action@master
