@@ -25,7 +25,8 @@ jobs:
             TIMESTAMP=$(date +%Y%m%d%H%M%S)
             ${LATEX} ${MANUSCRIPT_PATH##*/}.tex
             mv ${MANUSCRIPT_PATH##*/}.pdf ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
-  
+            echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+                               
     - name: Push resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
