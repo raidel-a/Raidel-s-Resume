@@ -12,6 +12,7 @@ jobs:
       TIMESTAMP: $(date +%Y%m%d%H%M%S) 
     steps:
     - uses: actions/checkout@v4.1.1
+    
     - name: Install texlive
       run: |
             sudo apt-get install texlive-publishers \
@@ -19,6 +20,7 @@ jobs:
                                  texlive-latex-extra \
                                  texlive-fonts-recommended \
                                  texlive-fonts-extra
+    
     - name: Build resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
@@ -60,10 +62,11 @@ jobs:
             sudo sed -i "s/$MAP/$MAPR/" /etc/ImageMagick-6/policy.xml
             sudo sed -i "s/$MEM/$MEMR/" /etc/ImageMagick-6/policy.xml
               
-            - name: Convert PDF to PNG
-            run: |
-              cd ${MANUSCRIPT_PATH%/*}
-              convert -density 900 -background white -alpha off ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf -resize 25% -quality 90 -colorspace RGB ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
+    - name: Convert PDF to PNG
+      run: |
+            cd ${MANUSCRIPT_PATH%/*}
+            convert -density 900 -background white -alpha off ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf -resize 25% -quality 90 -colorspace RGB ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
+    
     - name: Commit PNG
       id: commit
       run: |
@@ -72,6 +75,7 @@ jobs:
             git config --local user.name "github-actions[bot]"
             git add ${MANUSCRIPT_PATH##*/}_TIMESTAMP.png
             git commit -m "[bot] updated ${MANUSCRIPT_PATH##*/}_TIMESTAMP.png"
+    
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
