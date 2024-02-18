@@ -9,7 +9,6 @@ jobs:
     env:
       MANUSCRIPT_PATH: latexResume/resume
       LATEX: pdflatex
-      TIMESTAMP: $(date +%Y-%m-%d-%H:%M:%S) 
     steps:
     - uses: actions/checkout@v4.1.1
     
@@ -24,9 +23,10 @@ jobs:
     - name: Build resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-          
+            TIMESTAMP=$(date +%Y-%m-%d-%H:%M:%S)
             ${LATEX} ${MANUSCRIPT_PATH##*/}.tex
             mv ${MANUSCRIPT_PATH##*/}.pdf ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
+            echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
                                
     - name: Push resume
       run: |
