@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MANUSCRIPT_PATH: latexResume/resume
-      LATEX: pdflatex 
+      LATEX: pdflatex
+      TIMESTAMP: $(date +%Y%m%d%H%M%S) 
     steps:
     - uses: actions/checkout@v4.1.1
     - name: Install texlive
@@ -21,14 +22,14 @@ jobs:
     - name: Build resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-            TIMESTAMP=$(date +%Y%m%d%H%M%S)
-            ${LATEX} ${MANUSCRIPT_PATH##*/}.tex
+            
+            ${LATEX} ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.tex
             mv ${MANUSCRIPT_PATH##*/}.pdf ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
   
     - name: Push resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-            git add -f ${MANUSCRIPT_PATH##*/}.pdf
+            git add -f ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
             git -c user.name='resume-maker' -c user.email='resume-maker' commit -m "update pdf"
             git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
@@ -68,8 +69,8 @@ jobs:
             cd ${MANUSCRIPT_PATH%/*}
             git config --local user.email "action[bot]@github.com"
             git config --local user.name "github-actions[bot]"
-            git add ${MANUSCRIPT_PATH##*/}.png
-            git commit -m "[bot] updated ${MANUSCRIPT_PATH##*/}.png"
+            git add ${MANUSCRIPT_PATH##*/}_TIMESTAMP.png
+            git commit -m "[bot] updated ${MANUSCRIPT_PATH##*/}_TIMESTAMP.png"
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
