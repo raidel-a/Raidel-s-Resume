@@ -9,7 +9,6 @@ jobs:
     env:
       MANUSCRIPT_PATH: latexResume/resume
       LATEX: pdflatex 
-      TIMESTAMP: ${{ format('{0:yyyyMMddHHmmss}', github.event.head_commit.timestamp) }}
     steps:
     - uses: actions/checkout@v4.1.1
     - name: Install texlive
@@ -22,6 +21,7 @@ jobs:
     - name: Build resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
+            TIMESTAMP=$(date +%Y%m%d%H%M%S)
             ${LATEX} ${MANUSCRIPT_PATH##*/}.tex
             mv ${MANUSCRIPT_PATH##*/}.pdf ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
   
@@ -58,18 +58,18 @@ jobs:
             sudo sed -i "s/$MAP/$MAPR/" /etc/ImageMagick-6/policy.xml
             sudo sed -i "s/$MEM/$MEMR/" /etc/ImageMagick-6/policy.xml
               
-    - name: Convert PDF to PNG
-      run: |
-            cd ${MANUSCRIPT_PATH%/*}
-            convert -density 900 -background white -alpha off ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf -resize 25% -quality 90 -colorspace RGB ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
+            - name: Convert PDF to PNG
+            run: |
+              cd ${MANUSCRIPT_PATH%/*}
+              convert -density 900 -background white -alpha off ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf -resize 25% -quality 90 -colorspace RGB ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
     - name: Commit PNG
       id: commit
       run: |
             cd ${MANUSCRIPT_PATH%/*}
             git config --local user.email "action[bot]@github.com"
             git config --local user.name "github-actions[bot]"
-            git add ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
-            git commit -m "[bot] updated ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png"
+            git add ${MANUSCRIPT_PATH##*/}.png
+            git commit -m "[bot] updated ${MANUSCRIPT_PATH##*/}.png"
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
