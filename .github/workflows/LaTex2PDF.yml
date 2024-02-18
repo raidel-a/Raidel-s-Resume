@@ -9,7 +9,7 @@ jobs:
     env:
       MANUSCRIPT_PATH: latexResume/resume
       LATEX: pdflatex
-      TIMESTAMP: $(date +%Y-%m-%d\%H:%M:%S) 
+      TIMESTAMP: $(date +%Y-%m-%d-%H:%M:%S) 
     steps:
     - uses: actions/checkout@v4.1.1
     
