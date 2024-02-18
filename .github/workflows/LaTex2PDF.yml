@@ -71,13 +71,6 @@ jobs:
       id: commit
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-            git config --local user.email "action[bot]@github.com"
-            git config --local user.name "github-actions[bot]"
-            git add ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
-            git commit -m "[bot] updated ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png"
-    
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-              
+            git add -f ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
+            git -c user.name='resume-maker' -c user.email='resume-maker' commit -m "update png"
+            git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
