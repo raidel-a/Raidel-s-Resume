@@ -22,8 +22,8 @@ jobs:
     - name: Build resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-            
-            ${LATEX} ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.tex
+            TIMESTAMP=$(date +%Y%m%d%H%M%S)
+            ${LATEX} ${MANUSCRIPT_PATH##*/}.tex
             mv ${MANUSCRIPT_PATH##*/}.pdf ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
   
     - name: Push resume
