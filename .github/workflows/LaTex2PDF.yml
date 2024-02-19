@@ -67,7 +67,7 @@ jobs:
     - name: Convert PDF to PNG
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-            convert -density 900 -background white -alpha off ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf -resize 25% -quality 90 -colorspace RGB ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
+            convert -density 900 -background white -alpha off ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf -resize 25% -quality 90 -colorspace RGB ${MANUSCRIPT_PATH##*/}.png
     
     - name: Commit PNG
       id: commit
