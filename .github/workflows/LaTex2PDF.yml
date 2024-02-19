@@ -1,7 +1,10 @@
 name: LaTex2PDF
 # description: build LaTex manuscripts and push the latest PDF and PNG back to GitHub
 
-on: push
+on:
+  push:
+    paths:
+      - 'latexResume/resume.tex'
 
 jobs:
   build:
