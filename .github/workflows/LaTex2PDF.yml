@@ -3,6 +3,8 @@ name: LaTex2PDF
 
 on:
   push:
+    branches: 
+      - timestamped-version
     paths:
       - 'latexResume/resume.tex'
 
