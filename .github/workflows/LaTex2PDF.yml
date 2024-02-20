@@ -26,7 +26,7 @@ jobs:
     - name: Build resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-            TIMESTAMP=$(date +%Y-%m-%d-%H:%M:%S)
+            TIMESTAMP=$(date +%Y-%m-%d--%H-%M-%S)
             ${LATEX} ${MANUSCRIPT_PATH##*/}.tex
             mv ${MANUSCRIPT_PATH##*/}.pdf ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
             echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
@@ -73,6 +73,6 @@ jobs:
       id: commit
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-            git add -f ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.png
+            git add -f ${MANUSCRIPT_PATH##*/}.png
             git -c user.name='resume-maker' -c user.email='resume-maker' commit -m "update png"
             git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
