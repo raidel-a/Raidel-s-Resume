@@ -30,6 +30,7 @@ jobs:
             cd ${MANUSCRIPT_PATH%/*}
             TIMESTAMP=$(date +%Y-%m-%d--%H-%M-%S)
             ${LATEX} ${MANUSCRIPT_PATH##*/}.tex
+            cp ${MANUSCRIPT_PATH##*/}.pdf ${MANUSCRIPT_PATH##*/}_latest.pdf
             mv ${MANUSCRIPT_PATH##*/}.pdf ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
             echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
                                
