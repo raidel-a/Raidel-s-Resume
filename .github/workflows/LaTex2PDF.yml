@@ -37,7 +37,7 @@ jobs:
     - name: Push resume
       run: |
             cd ${MANUSCRIPT_PATH%/*}
-            git add -f ${MANUSCRIPT_PATH*/}_latest.pdf
+            git add -f ${MANUSCRIPT_PATH##*/}_latest.pdf
             git add -f ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
             git -c user.name='resume-maker' -c user.email='resume-maker' commit -m "update pdf"
             git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
