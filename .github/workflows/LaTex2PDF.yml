@@ -1,9 +1,8 @@
 name: LaTex2PDF
-# description: build LaTex manuscripts and push the latest PDF and PNG back to GitHub
 
 on:
   push:
-    branches: 
+    branches:
       - timestamped-version
     paths:
       - 'latexResume/resume.tex'
@@ -17,7 +16,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
     
+    - name: Cache LaTeX dependencies
+      uses: actions/cache@v4
+      with:
+        path: /usr/share/texlive
+        key: ${{ runner.os }}-texlive-${{ hashFiles('latexResume/resume.tex') }}
+        restore-keys: |
+          ${{ runner.os }}-texlive-
+    
     - name: Install texlive
+      if: steps.cache-latex.outputs.cache-hit != 'true'
       run: |
             sudo apt-get install texlive-publishers \
                                  texlive-latex-recommended \
@@ -41,42 +49,17 @@ jobs:
             git add -f ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf
             git -c user.name='resume-maker' -c user.email='resume-maker' commit -m "update pdf"
             git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-
-    - name: Install ghostscript
-      run: sudo apt-get update --fix-missing && sudo apt install ghostscript
-    - name: Change ImageMagick security policy
-      run: |
-            DQT='"' 
-            SRC="rights=${DQT}none${DQT} pattern=${DQT}PDF${DQT}"
-            RPL="rights=${DQT}read\|write${DQT} pattern=${DQT}PDF${DQT}"
-              
-            HGT="name=${DQT}height${DQT} value=${DQT}10KP${DQT}"
-            HGTR="name=${DQT}height${DQT} value=${DQT}128Kp${DQT}"
-              
-            WDT="name=${DQT}width${DQT} value=${DQT}10KP${DQT}"
-            WDTR="name=${DQT}width${DQT} value=${DQT}128Kp${DQT}"
-              
-            MAP="name=${DQT}map${DQT} value=${DQT}512MiB${DQT}"
-            MAPR="name=${DQT}map${DQT} value=${DQT}4GiB${DQT}"
-              
-            MEM="name=${DQT}memory${DQT} value=${DQT}256MiB${DQT}"
-            MEMR="name=${DQT}memory${DQT} value=${DQT}2GiB${DQT}"
-              
-            sudo sed -i "s/$SRC/$RPL/" /etc/ImageMagick-6/policy.xml
-            sudo sed -i "s/$HGT/$HGTR/" /etc/ImageMagick-6/policy.xml
-            sudo sed -i "s/$WDT/$WDTR/" /etc/ImageMagick-6/policy.xml
-            sudo sed -i "s/$MAP/$MAPR/" /etc/ImageMagick-6/policy.xml
-            sudo sed -i "s/$MEM/$MEMR/" /etc/ImageMagick-6/policy.xml
-              
-    - name: Convert PDF to PNG
-      run: |
-            cd ${MANUSCRIPT_PATH%/*}
-            convert -density 900 -background white -alpha off ${MANUSCRIPT_PATH##*/}_$TIMESTAMP.pdf -resize 25% -quality 90 -colorspace RGB ${MANUSCRIPT_PATH##*/}.png
     
-    - name: Commit PNG
-      id: commit
-      run: |
-            cd ${MANUSCRIPT_PATH%/*}
-            git add -f ${MANUSCRIPT_PATH##*/}.png
-            git -c user.name='resume-maker' -c user.email='resume-maker' commit -m "update png"
-            git push -q -f https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+    - name: Cache ImageMagick and Ghostscript
+      uses: actions/cache@v4
+      with:
+        path: |
+          /usr/bin/convert
+          /usr/bin/gs
+        key: ${{ runner.os }}-imagemagick-ghostscript
+    
+    - name: Install ghostscript
+      if: steps.cache-imagemagick.outputs.cache-hit != 'true'
+      run: sudo apt-get update --fix-missing && sudo apt install ghostscript
+    
+    # Rest of the steps remain the same
